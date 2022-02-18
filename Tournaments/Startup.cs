@@ -20,7 +20,7 @@ namespace Tournaments
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
-                    builder.SetIsOriginAllowed(s => true).WithOrigins("http://localhost:4200")
+                    builder.SetIsOriginAllowed(s => true).WithOrigins("http://localhost:3000")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                 );
