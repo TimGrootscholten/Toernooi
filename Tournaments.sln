@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tournaments", "Tournaments\Tournaments.csproj", "{AE3CC03F-5EA4-4048-85F3-A911010C3F51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tournaments", "Tournaments\Tournaments.csproj", "{AE3CC03F-5EA4-4048-85F3-A911010C3F51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dto", "Dto\Dto.csproj", "{3CF3C743-11D3-468A-BC65-10A05F214959}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dtos", "Dto\Dtos.csproj", "{3CF3C743-11D3-468A-BC65-10A05F214959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migration", "Migrations\Migration.csproj", "{79A93D45-9617-4617-BF82-EB3E2B445381}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations", "Migrations\Migrations.csproj", "{79A93D45-9617-4617-BF82-EB3E2B445381}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{C6B4EDC3-F905-47FC-A98F-5EA1D138F54E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Model\Models.csproj", "{C6B4EDC3-F905-47FC-A98F-5EA1D138F54E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{398F736B-1245-41E0-A20E-0645D1F6EED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repository\Repositories.csproj", "{398F736B-1245-41E0-A20E-0645D1F6EED1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{FB4CD8B2-B497-4053-8A32-CC088941D6CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Service\Services.csproj", "{FB4CD8B2-B497-4053-8A32-CC088941D6CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
