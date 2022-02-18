@@ -17,14 +17,9 @@ namespace Tournaments
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder =>
-                    builder.SetIsOriginAllowed(s => true)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                );
-            });
+            services.AddCors(options => options.AddDefaultPolicy(
+                builder => builder.WithOrigins("http://localhost:3000")));
+
             services.AddSwaggerGen(s =>
             {
                 s.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament", Version = "v1" });
@@ -46,6 +41,8 @@ namespace Tournaments
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
