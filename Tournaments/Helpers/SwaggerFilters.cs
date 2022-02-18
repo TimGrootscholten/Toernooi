@@ -13,7 +13,6 @@ namespace Tournaments.Helpers
                 calls.Value.Properties.Remove(calls.Value?.Properties.Keys.FirstOrDefault(x => x == "created")!);
                 if (calls.Value == null) continue;
                 calls.Value.Properties.Remove(calls.Value?.Properties.Keys.FirstOrDefault(x => x == "updated")!);
-                calls.Value?.Properties.Remove(calls.Value?.Properties.Keys.FirstOrDefault(x => x == "isDeleted")!);
             }
         }
     }
