@@ -18,7 +18,11 @@ namespace Tournaments
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options => options.AddDefaultPolicy(
-                builder => builder.WithOrigins("http://localhost:3000")));
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000");
+                    builder.AllowAnyHeader();
+                }));
 
             services.AddSwaggerGen(s =>
             {
