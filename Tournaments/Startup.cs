@@ -27,6 +27,7 @@ namespace Tournaments
             services.AddSwaggerGen(s =>
             {
                 s.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament", Version = "v1" });
+                s.CustomOperationIds(e => e.ActionDescriptor.RouteValues["action"]);
                 s.DocumentFilter<SwaggerFilters>();
             });
             services.AddControllers();
