@@ -14,6 +14,7 @@ namespace Migrations
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Team> Teams { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

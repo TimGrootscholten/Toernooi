@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dtos;
+using Microsoft.AspNetCore.Mvc;
+using Services;
 
 namespace Tournaments.Controllers.V1
 {
@@ -6,16 +8,46 @@ namespace Tournaments.Controllers.V1
     [Produces("application/json")]
     public class TeamV1Controller : BaseV1Controller
     {
+        private readonly ITeamService _teamService;
 
-        public TeamV1Controller()
+        public TeamV1Controller(ITeamService teamService)
         {
+            _teamService = teamService;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public TeamDto GetTeamById(Guid id)
+        {
+            return _teamService.GetTeamById(id);
         }
 
         [HttpGet]
         [Route("")]
-        public IActionResult GetTeam()
+        public List<TeamDto> GetTeams()
         {
-            return Ok("Pizza");
+            return _teamService.GetTeams();
+        }
+
+        [HttpPost]
+        [Route("")]
+        public TeamDto CreateTeam([FromBody] TeamDto team)
+        {
+            return _teamService.CreateTeam(team);
+        }
+
+        [HttpPut]
+        [Route("")]
+        public TeamDto UpdateTeam([FromBody] TeamDto team)
+        {
+            return _teamService.UpdateTeam(team);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public bool DeleteTeam(Guid id)
+        {
+            return _teamService.DeleteTeam(id);
         }
     }
 }
