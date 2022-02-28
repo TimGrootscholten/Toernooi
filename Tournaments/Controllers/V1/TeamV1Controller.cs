@@ -15,36 +15,31 @@ namespace Tournaments.Controllers.V1
             _teamService = teamService;
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id:guid}")]
         public TeamDto GetTeamById(Guid id)
         {
             return _teamService.GetTeamById(id);
         }
 
         [HttpGet]
-        [Route("")]
         public List<TeamDto> GetTeams()
         {
             return _teamService.GetTeams();
         }
 
         [HttpPost]
-        [Route("")]
         public TeamDto CreateTeam([FromBody] TeamDto team)
         {
             return _teamService.CreateTeam(team);
         }
 
         [HttpPut]
-        [Route("")]
         public TeamDto UpdateTeam([FromBody] TeamDto team)
         {
             return _teamService.UpdateTeam(team);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id:guid}")]
         public bool DeleteTeam(Guid id)
         {
             return _teamService.DeleteTeam(id);

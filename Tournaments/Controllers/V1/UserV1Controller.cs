@@ -16,14 +16,12 @@ namespace Tournaments.Controllers.V1
         }
 
         [HttpGet]
-        [Route("")]
         public IActionResult GetUser()
         {
             return Ok("Pizza");
         }
 
         [HttpPost]
-        [Route("")]
         public IActionResult CreateUser([FromBody] UserDto user)
         {
             _userService.CreateUser(user);
