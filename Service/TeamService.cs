@@ -1,16 +1,21 @@
 ﻿using Repositories;
 using Mapster;
-using Model;
+using Models;
 using Dtos;
+using Microsoft.Extensions.Logging;
 
 namespace Services
 {
     public class TeamService : ITeamService
     {
+        private readonly ILogger _logger;
         private readonly ITeamRepository _teamRepository;
 
-        public TeamService(ITeamRepository teamRepository)
+        public TeamService(
+            ILogger<ApiExceptionService> logger,
+            ITeamRepository teamRepository)
         {
+            _logger = logger;
             _teamRepository = teamRepository;
         }
 
@@ -26,20 +31,26 @@ namespace Services
 
         public TeamDto CreateTeam(TeamDto team)
         {
-            Team orgTeam = team.Adapt<Team>();
-            return _teamRepository.CreateTeam(orgTeam).Adapt<TeamDto>();
+            var orgTeam = team.Adapt<Team>();
+            var newTeam = _teamRepository.CreateTeam(orgTeam).Adapt<TeamDto>();
+            _logger.Log(LogLevel.Information, $"Created team with id {newTeam.Id}");
+            return newTeam;
         }
 
         public TeamDto UpdateTeam(TeamDto team)
         {
-            Team orgTeam = team.Adapt<Team>();
+            var orgTeam = team.Adapt<Team>();
             orgTeam.SetUpdated();
-            return _teamRepository.UpdateTeam(orgTeam).Adapt<TeamDto>();
+            var newTeam = _teamRepository.UpdateTeam(orgTeam).Adapt<TeamDto>();
+            _logger.Log(LogLevel.Information, $"Updated team with id {newTeam.Id}");
+            return newTeam;
         }
 
         public bool DeleteTeam(Guid id)
         {
-            return _teamRepository.DeleteTeam(id);
+            var oldTeam = _teamRepository.DeleteTeam(id);
+            _logger.Log(LogLevel.Information, $"Deleted team with id {id}");
+            return oldTeam;
         }
     }
 

@@ -10,11 +10,15 @@ namespace Services
         {
             services.AddSingleton(configuration);
 
+            services.AddSingleton<IApiExceptionService, ApiExceptionService>();
+
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<ITeamRepository, TeamRepository>();
+
+            services.AddTransient<ITokenService, TokenService>();
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using Migrations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Model;
+using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Repositories
 {
@@ -17,6 +13,13 @@ namespace Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await _dbContext.Users.AsQueryable()
+                .Where(x => x.Username == username)
+                .FirstOrDefaultAsync();
+        }
+
         public User CreateUser(User user)
         {
             _dbContext.Users.Add(user);
@@ -27,6 +30,7 @@ namespace Repositories
 
     public interface IUserRepository
     {
+        Task<User> GetUserByUsername(string username);
         User CreateUser(User user);
     }
 }

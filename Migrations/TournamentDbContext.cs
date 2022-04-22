@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Model;
+using Models;
 
 namespace Migrations
 {
@@ -15,6 +15,7 @@ namespace Migrations
 
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
+        public DbSet<Token> Tokens { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
