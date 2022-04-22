@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Migrations;
 using Repositories;
+using Services.User;
 
 namespace Services
 {
@@ -9,6 +11,8 @@ namespace Services
         public static void DependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(configuration);
+
+            services.AddTransient<IDatabaseService, DatabaseService>();
 
             services.AddSingleton<IApiExceptionService, ApiExceptionService>();
 

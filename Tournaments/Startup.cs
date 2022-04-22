@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Migrations;
 using Services;
@@ -24,16 +27,56 @@ namespace Tournaments
                     builder.AllowAnyHeader();
                 }));
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "tournaments.nl",
+                        ValidAudience = "tournaments.nl",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tournaments@3102")),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
             services.AddSwaggerGen(s =>
             {
-                s.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament", Version = "v1" });
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // must be lower case
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                s.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
+                });
+                s.SwaggerDoc("v1", new OpenApiInfo {Title = "Tournament", Version = "v1"});
                 s.CustomOperationIds(e => e.ActionDescriptor.RouteValues["action"]);
                 s.DocumentFilter<SwaggerFilters>();
             });
-            services.AddControllers();
+
             services.AddDbContext<TournamentDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TournamentDb")));
             services.DependencyInjection(Configuration);
+            
+            services.AddControllers();
+
+            var databaseService = services.BuildServiceProvider().GetService<IDatabaseService>();
+            databaseService?.CheckDatabaseConnection();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,6 +93,7 @@ namespace Tournaments
             app.UseCors();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseAuthentication();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }

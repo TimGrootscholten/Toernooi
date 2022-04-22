@@ -1,11 +1,11 @@
 ﻿using System.Net;
 using System.Security.Claims;
+using Dtos;
 using Repositories;
 using Mapster;
 using Models;
-using Dtos;
 
-namespace Services
+namespace Services.User
 {
     public class UserService : IUserService
     {
@@ -24,35 +24,39 @@ namespace Services
 
         public UserDto CreateUser(UserDto user)
         {
-            User orgUser = user.Adapt<User>();
+            var orgUser = user.Adapt<Models.User>();
             orgUser.Password = BCrypt.Net.BCrypt.HashPassword(orgUser.Password);
             return _userRepository.CreateUser(orgUser).Adapt<UserDto>();
         }
 
         public async Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequest)
         {
-            User user = await GetUserByUsername(authenticateRequest.Email);
-            bool validUser = CheckCredentials(user, authenticateRequest.Password);
-            if (!validUser) throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, Enums.MessageText.Unautorized.GetDescription());
-            
+            var user = await GetUserByUsername(authenticateRequest.Username);
+            var validUser = CheckCredentials(user, authenticateRequest.Password);
+            if (!validUser)
+                throw _apiExceptionService.Create(HttpStatusCode.Unauthorized,
+                    Enums.MessageText.Unautorized.GetDescription());
+
             List<Claim> claims = new List<Claim>
             {
                 new("username", user.Username),
-                new("firstName", user.FirstName)
+                new("firstName", user.FirstName),
             };
+            var roles = new List<int> {1, 2};
+            claims.AddRange(roles.Select(x => new Claim("scopes", x.ToString())));
 
-            string accessToken = _tokenService.GenerateAccessToken(claims);
-            Guid refreshToken = Guid.NewGuid();
+            var accessToken = _tokenService.GenerateAccessToken(claims);
+            var refreshToken = Guid.NewGuid();
 
             return new AuthResponse {AccesToken = accessToken, RefreshToken = refreshToken};
         }
 
-        private async Task<User> GetUserByUsername(string username)
+        private async Task<Models.User> GetUserByUsername(string username)
         {
             return await _userRepository.GetUserByUsername(username);
         }
 
-        private bool CheckCredentials(User user, string password)
+        private static bool CheckCredentials(Models.User user, string password)
         {
             return BCrypt.Net.BCrypt.Verify(password, user.Password);
         }

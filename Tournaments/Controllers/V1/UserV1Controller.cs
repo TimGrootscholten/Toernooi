@@ -1,6 +1,6 @@
 ﻿using Dtos;
 using Microsoft.AspNetCore.Mvc;
-using Services;
+using Services.User;
 
 namespace Tournaments.Controllers.V1
 {
@@ -15,17 +15,17 @@ namespace Tournaments.Controllers.V1
             _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult GetUser()
-        {
-            return Ok("Pizza");
-        }
-
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserDto user)
         {
             _userService.CreateUser(user);
             return Ok();
+        }
+        
+        [HttpPost("token")]
+        public async Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequestDto)
+        {
+            return await _userService.Authenticate(authenticateRequestDto);
         }
     }
 }
