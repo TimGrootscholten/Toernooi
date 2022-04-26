@@ -34,8 +34,7 @@ namespace Services.User
             var user = await GetUserByUsername(authenticateRequest.Username);
             var validUser = CheckCredentials(user, authenticateRequest.Password);
             if (!validUser)
-                throw _apiExceptionService.Create(HttpStatusCode.Unauthorized,
-                    Enums.MessageText.Unautorized.GetDescription());
+                throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, Enums.MessageText.Unautorized.GetDescription());
 
             List<Claim> claims = new List<Claim>
             {
@@ -48,6 +47,8 @@ namespace Services.User
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = Guid.NewGuid();
 
+            await _tokenService.SaveRefreshToken(authenticateRequest.ClientId, refreshToken, authenticateRequest.Username);
+            
             return new AuthResponse {AccesToken = accessToken, RefreshToken = refreshToken};
         }
 

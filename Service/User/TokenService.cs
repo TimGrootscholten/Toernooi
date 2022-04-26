@@ -1,12 +1,25 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Models;
+using Repositories;
 
 namespace Services.User
 {
     public class TokenService : ITokenService
     {
+        private readonly ITokenRepository _tokenRepository;
+        private readonly IApiExceptionService _apiExceptionService;
+
+        public TokenService(ITokenRepository tokenRepository,
+            IApiExceptionService apiExceptionService)
+        {
+            _tokenRepository = tokenRepository;
+            _apiExceptionService = apiExceptionService;
+        }
+
         public string GenerateAccessToken(IEnumerable<Claim> claims)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tournaments@3102"));
@@ -20,11 +33,18 @@ namespace Services.User
             );
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
+
+        public async Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null)
+        {
+            var saveRefreshToken = await _tokenRepository.SaveRefreshToken(clientId, refreshToken, username, oldRefreshToken);
+            if (!saveRefreshToken) throw _apiExceptionService.Create(HttpStatusCode.InternalServerError, Enums.MessageText.Error.GetDescription());
+            return saveRefreshToken;
+        }
     }
 
     public interface ITokenService
     {
         string GenerateAccessToken(IEnumerable<Claim> claims);
+        Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null);
     }
 }
-

@@ -7,6 +7,7 @@ namespace Repositories
     public class TokenRepository : ITokenRepository
     {
         private readonly TournamentDbContext _dbContext;
+
         public TokenRepository(TournamentDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -24,7 +25,7 @@ namespace Repositories
                 {
                     ClientId = clientId,
                     RefreshToken = refreshToken,
-                    RefreshTokenExpires = DateTime.UtcNow.AddMonths(6), 
+                    RefreshTokenExpires = DateTime.UtcNow.AddDays(7),
                     Username = username
                 };
                 _dbContext.Tokens.Update(saveToken);
@@ -35,12 +36,17 @@ namespace Repositories
             if (token.RefreshToken == oldRefreshToken)
             {
                 token.RefreshToken = refreshToken;
-                token.RefreshTokenExpires = DateTime.UtcNow.AddMonths(6);
+                token.RefreshTokenExpires = DateTime.UtcNow.AddDays(7);
                 await _dbContext.Tokens.AddAsync(token);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
 
+            if (token.ClientId == clientId)
+            {
+                _dbContext.Tokens.Remove(new Token {Id = token.Id});
+                await _dbContext.SaveChangesAsync();
+            }
             return false;
         }
 
@@ -50,13 +56,8 @@ namespace Repositories
                 .Where(x => x.ClientId == clientId)
                 .FirstOrDefaultAsync();
 
-            if (token != null)
-            {
-                if (token.RefreshToken == oldRefreshToken && DateTime.UtcNow < token.RefreshTokenExpires)
-                {
-                    return token;
-                }
-            }
+            if (token == null) return null;
+            if (token.RefreshToken == oldRefreshToken && DateTime.UtcNow < token.RefreshTokenExpires) return token;
             return null;
         }
 
@@ -71,6 +72,7 @@ namespace Repositories
                 _dbContext.Tokens.Remove(token);
                 await _dbContext.SaveChangesAsync();
             }
+
             return token;
         }
     }

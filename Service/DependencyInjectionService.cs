@@ -11,10 +11,9 @@ namespace Services
         public static void DependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(configuration);
-
-            services.AddTransient<IDatabaseService, DatabaseService>();
-
+            
             services.AddSingleton<IApiExceptionService, ApiExceptionService>();
+            services.AddTransient<IDatabaseService, DatabaseService>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
@@ -23,6 +22,7 @@ namespace Services
             services.AddTransient<ITeamRepository, TeamRepository>();
 
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<ITokenRepository, TokenRepository>();
         }
     }
 }

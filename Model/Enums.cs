@@ -6,8 +6,8 @@ namespace Models
     {
         public enum MessageText
         {
-            [Description("Unautorized")]
-            Unautorized = 1
+            [Description("Error")] Error = 1,
+            [Description("Unautorized")] Unautorized = 2
         }
     }
 }
