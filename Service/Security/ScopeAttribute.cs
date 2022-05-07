@@ -26,9 +26,9 @@ public class ScopeAttribute : TypeFilterAttribute
             if (context.Result != null) return;
             var claimsIdentity = context.HttpContext.User;
             if (claimsIdentity == null) return;
-
+            
             var isInScope = SecurityUtil.IsInScope(claimsIdentity, _scopes);
-            if (!isInScope)
+            if (!isInScope && _scopes.Length > 0)
             {
                 HandleForbiddenRequest(context);
             }

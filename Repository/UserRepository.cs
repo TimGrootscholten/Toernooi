@@ -13,6 +13,11 @@ namespace Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<User> GetUserById(Guid id)
+        {
+            return await _dbContext.Users.FindAsync(id);
+        }
+
         public async Task<User> GetUserByUsername(string username)
         {
             return await _dbContext.Users.AsQueryable()
@@ -20,17 +25,26 @@ namespace Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public User CreateUser(User user)
+        public async Task<User> CreateUser(User user)
         {
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+            return user;
+        }
+        
+        public async Task<User> UpdateUser(User user)
+        {
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
             return user;
         }
     }
 
     public interface IUserRepository
     {
+        Task<User> GetUserById(Guid id);
         Task<User> GetUserByUsername(string username);
-        User CreateUser(User user);
+        Task<User> CreateUser(User user);
+        Task<User> UpdateUser(User user);
     }
 }

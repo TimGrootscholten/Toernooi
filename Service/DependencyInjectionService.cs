@@ -18,6 +18,9 @@ namespace Services
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
 
+            services.AddTransient<IPermissionGroupService, PermissionGroupService>();
+            services.AddTransient<IPermissionGroupRepository, PermissionGroupRepository>();
+
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<ITeamRepository, TeamRepository>();
 

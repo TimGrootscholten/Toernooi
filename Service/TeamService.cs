@@ -12,7 +12,7 @@ namespace Services
         private readonly ITeamRepository _teamRepository;
 
         public TeamService(
-            ILogger<ApiExceptionService> logger,
+            ILogger<TeamService> logger,
             ITeamRepository teamRepository)
         {
             _logger = logger;
