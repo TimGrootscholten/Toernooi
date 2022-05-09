@@ -29,18 +29,10 @@ namespace Services.User
             _apiExceptionService = apiExceptionService;
         }
 
-        public async Task<UserInfoDto> GetUser(Guid id)
+        public async Task<UserInfoDto> GetUserById(Guid id)
         {
             var user = await _userRepository.GetUserById(id);
-            return new UserInfoDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PermissionGroups = user.PermissionGroups.Select(x => x.ToDto()).ToList(),
-                
-            };
+            return user.ToInfoDto();
         }
 
         public async Task<UserDto> CreateUser(UserDto user)
@@ -107,6 +99,7 @@ namespace Services.User
 
     public interface IUserService
     {
+        Task<UserInfoDto> GetUserById(Guid id);
         Task<UserDto> CreateUser(UserDto user);
         Task<UserEditDto> UpdateUser(UserEditDto user);
         Task<bool> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds);

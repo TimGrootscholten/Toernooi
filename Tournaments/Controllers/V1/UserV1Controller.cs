@@ -17,6 +17,13 @@ namespace Tournaments.Controllers.V1
             _userService = userService;
         }
 
+        [HttpGet("{id:guid}")]
+        [Scope]
+        public async Task<UserInfoDto> GetUserById(Guid id)
+        {
+            return await _userService.GetUserById(id);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserDto user)
         {
@@ -24,16 +31,16 @@ namespace Tournaments.Controllers.V1
             return Ok();
         }
 
-        [Scope]
         [HttpPut]
+        [Scope]
         public async Task<IActionResult> UpdateUser([FromBody] UserEditDto user)
         {
             await _userService.UpdateUser(user);
             return Ok();
         }
 
-        [Scope]
         [HttpPut("addPermissionGroups")]
+        [Scope]
         public async Task<IActionResult> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds)
         {
             await _userService.AddPermissionGroups(userId, permissionGroupIds);
