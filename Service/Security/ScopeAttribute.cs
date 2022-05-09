@@ -8,7 +8,7 @@ public class ScopeAttribute : TypeFilterAttribute
 {
     public ScopeAttribute(params TournamentPermissions[] scopes) : base(typeof(ScopeFilter))
     {
-        Arguments = new object[] { scopes };
+        Arguments = new object[] {scopes};
     }
 
     private class ScopeFilter : IAuthorizationFilter
@@ -17,7 +17,7 @@ public class ScopeAttribute : TypeFilterAttribute
 
         public ScopeFilter(params TournamentPermissions[] scopes)
         {
-            _scopes = Array.ConvertAll(scopes, x => (int)x);
+            _scopes = Array.ConvertAll(scopes, x => (int) x);
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -26,18 +26,18 @@ public class ScopeAttribute : TypeFilterAttribute
             if (context.Result != null) return;
             var claimsIdentity = context.HttpContext.User;
             if (claimsIdentity == null) return;
-            
+
+            var isLoggedIn = SecurityUtil.IsLoggedIn(claimsIdentity);
             var isInScope = SecurityUtil.IsInScope(claimsIdentity, _scopes);
-            if (!isInScope && _scopes.Length > 0)
+            if (!isLoggedIn || isLoggedIn && !isInScope && _scopes.Length > 0)
             {
                 HandleForbiddenRequest(context);
             }
         }
-        
+
         private static void HandleForbiddenRequest(AuthorizationFilterContext context)
         {
-            if (context == null)
-                throw new ArgumentException(null, nameof(context));
+            if (context == null) throw new ArgumentException(null, nameof(context));
             context.Result = new ForbidResult();
         }
     }
