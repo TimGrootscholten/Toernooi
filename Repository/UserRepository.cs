@@ -38,6 +38,13 @@ namespace Repositories
             await _dbContext.SaveChangesAsync();
             return user;
         }
+
+        public async Task<bool> IsUsernameUnique(string username)
+        {
+            return await _dbContext.Users.AsQueryable()
+                .Where(x => x.Username == username)
+                .AnyAsync();
+        }
     }
 
     public interface IUserRepository
@@ -46,5 +53,6 @@ namespace Repositories
         Task<User> GetUserByUsername(string username);
         Task<User> CreateUser(User user);
         Task<User> UpdateUser(User user);
+        Task<bool> IsUsernameUnique(string username);
     }
 }

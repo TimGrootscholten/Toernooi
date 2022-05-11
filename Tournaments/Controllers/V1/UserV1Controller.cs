@@ -39,7 +39,7 @@ namespace Tournaments.Controllers.V1
             return Ok();
         }
 
-        [HttpPut("addPermissionGroups")]
+        [HttpPut("add-permission-groups")]
         [Scope]
         public async Task<IActionResult> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds)
         {
@@ -51,6 +51,12 @@ namespace Tournaments.Controllers.V1
         public async Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequestDto)
         {
             return await _userService.Authenticate(authenticateRequestDto);
+        }
+
+        [HttpPost("is-unique-username")]
+        public async Task<bool> IsUniqueUsername(string username)
+        {
+            return await _userService.IsUniqueUsername(username);
         }
     }
 }

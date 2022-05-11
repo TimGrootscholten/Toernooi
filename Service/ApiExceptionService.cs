@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Microsoft.Extensions.Logging;
-using Models;
 
 namespace Services
 {
@@ -18,20 +12,25 @@ namespace Services
             _logger = logger;
         }
 
-        public ApiException Create(HttpStatusCode code, string message)
+        public Exception Create(HttpStatusCode code, string message)
         {
-            return new ApiException(code, message);
+            var exception = new Exception($"{(int)code} {code} {message}");
+            _logger.LogError(exception, message);
+            return exception;
         }
 
-        public ApiException Create(Exception exception, HttpStatusCode code, Enums.MessageText errorcode)
+        public Exception Create(Exception exception, HttpStatusCode code, string message)
         {
-            _logger.LogError(exception, errorcode.GetDescription());
-            return new ApiException(code, errorcode.GetDescription());
+            var newMessage = $"{(int)code} {code} {message}";
+            _logger.LogError(exception, newMessage);
+            return new Exception( newMessage, exception);
         }
     }
 
     public interface IApiExceptionService
     {
-        ApiException Create(HttpStatusCode code, string message);
+        Exception Create(HttpStatusCode code, string message);
+        Exception Create(Exception exception, HttpStatusCode code, string message);
+
     }
 }

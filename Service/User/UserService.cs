@@ -38,6 +38,8 @@ namespace Services.User
         public async Task<UserDto> CreateUser(UserDto user)
         {
             var orgUser = user.Adapt<Models.User>();
+            var isUsernameUnique = await _userRepository.IsUsernameUnique(orgUser.Username);
+            if (isUsernameUnique) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Username is not unique");
             orgUser.Password = BCrypt.Net.BCrypt.HashPassword(orgUser.Password);
             var newUser = await _userRepository.CreateUser(orgUser);
             _logger.Log(LogLevel.Information, $"Created user with id {newUser.Id}");
@@ -67,9 +69,7 @@ namespace Services.User
         {
             var user = await GetUserByUsername(authenticateRequest.Username);
             var validUser = CheckCredentials(user, authenticateRequest.Password);
-            if (!validUser)
-                throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, Enums.MessageText.Unautorized.GetDescription());
-
+            if (!validUser) throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, Enums.MessageText.Unautorized.GetDescription());
             List<Claim> claims = new List<Claim>
             {
                 new("username", user.Username),
@@ -84,6 +84,11 @@ namespace Services.User
             await _tokenService.SaveRefreshToken(authenticateRequest.ClientId, refreshToken, authenticateRequest.Username);
             
             return new AuthResponse {AccesToken = accessToken, RefreshToken = refreshToken};
+        }
+
+        public async Task<bool> IsUniqueUsername(string username)
+        {
+            return !await _userRepository.IsUsernameUnique(username);
         }
 
         private async Task<Models.User> GetUserByUsername(string username)
@@ -104,5 +109,6 @@ namespace Services.User
         Task<UserEditDto> UpdateUser(UserEditDto user);
         Task<bool> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds);
         Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequest);
+        Task<bool> IsUniqueUsername(string username);
     }
 }
