@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Dtos
 {
     public class AuthResponse
     {
+        [Required]
         public string AccesToken { get; set; }
+        [Required]
         public Guid RefreshToken { get; set; }
     }
 }

@@ -1,11 +1,14 @@
-﻿using Models;
+﻿using System.ComponentModel.DataAnnotations;
+using Models;
 
 namespace Dtos;
 
 public class PermissionGroupDto : BaseDto
 {
     public Guid Id { get; set; }
+    [Required]
     public string Name { get; set; }
+    [Required]
     public List<int> Permissions { get; set; }
 }
 

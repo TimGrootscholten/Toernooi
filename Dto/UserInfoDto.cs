@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Models;
 
 namespace Dtos
@@ -6,8 +7,11 @@ namespace Dtos
     public class UserInfoDto : BaseDto
     {
         public Guid Id { get; set; }
+        [Required]
         public string Username { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
         public List<PermissionGroupDto> PermissionGroups { get; set; }
     }
