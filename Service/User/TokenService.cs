@@ -37,7 +37,7 @@ namespace Services.User
         public async Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null)
         {
             var saveRefreshToken = await _tokenRepository.SaveRefreshToken(clientId, refreshToken, username, oldRefreshToken);
-            if (!saveRefreshToken) throw _apiExceptionService.Create(HttpStatusCode.InternalServerError, Enums.MessageText.Error.GetDescription());
+            if (!saveRefreshToken) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to authenticate");
             return saveRefreshToken;
         }
     }

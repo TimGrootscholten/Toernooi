@@ -15,7 +15,7 @@ namespace Repositories
 
         public async Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null)
         {
-            var token = await _dbContext.Tokens.AsQueryable()
+            var token = await _dbContext.Tokens.AsNoTracking()
                 .Where(x => x.ClientId == clientId)
                 .FirstOrDefaultAsync();
 
@@ -28,7 +28,7 @@ namespace Repositories
                     RefreshTokenExpires = DateTime.UtcNow.AddDays(7),
                     Username = username
                 };
-                _dbContext.Tokens.Update(saveToken);
+                await _dbContext.Tokens.AddAsync(saveToken);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }

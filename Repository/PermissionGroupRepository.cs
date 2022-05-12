@@ -50,6 +50,21 @@ namespace Repositories
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<int>> GetPermissionsByPermissionGroupByIds(List<Guid> ids)
+        {
+            var permissions = await _dbContext.PermissionGroups.AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .Select(x => x.Permissions)
+                .ToListAsync();
+
+            var allPermissionsCombined = new List<int>();
+            foreach (var permission in permissions)
+            {
+                allPermissionsCombined.AddRange(permission.CommaSeparateStringToList());
+            }
+            return allPermissionsCombined.Distinct().ToList();
+        }
     }
 
     public interface IPermissionGroupRepository
@@ -60,5 +75,6 @@ namespace Repositories
         Task<PermissionGroup> CreatePermissionGroup(PermissionGroup permissionGroup);
         Task<PermissionGroup> UpdatePermissionGroup(PermissionGroup permissionGroup);
         Task<bool> DeletePermissionGroup(Guid id);
+        Task<List<int>> GetPermissionsByPermissionGroupByIds(List<Guid> ids);
     }
 }
