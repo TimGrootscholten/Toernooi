@@ -1,14 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dtos
+namespace Dtos;
+
+public class AuthenticateRequestDto
 {
-    public class AuthenticateRequestDto
-    {
-        [Required]
-        public Guid ClientId { get; set; }
-        [Required]
-        public string Username { get; set; }
-        [Required]
-        public string Password { get; set; }
-    }
+    [Required] public Guid ClientId { get; set; }
+    [Required] public string Username { get; set; }
+    [Required] public string Password { get; set; }
 }

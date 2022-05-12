@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dtos
+namespace Dtos;
+
+public class AuthResponse
 {
-    public class AuthResponse
-    {
-        [Required]
-        public string AccesToken { get; set; }
-        [Required]
-        public Guid RefreshToken { get; set; }
-    }
+    [Required] public string AccesToken { get; set; }
+    [Required] public Guid RefreshToken { get; set; }
 }

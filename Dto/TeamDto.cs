@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Dtos
+namespace Dtos;
+
+public class TeamDto : BaseDto
 {
-    public class TeamDto : BaseDto
-    {
-        public virtual Guid Id { get; set; }
-        [Required]
-        public virtual string Name { get; set; }
-    }
+    public virtual Guid Id { get; set; }
+    [Required] public virtual string Name { get; set; }
 }

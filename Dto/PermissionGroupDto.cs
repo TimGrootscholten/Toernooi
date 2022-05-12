@@ -6,10 +6,8 @@ namespace Dtos;
 public class PermissionGroupDto : BaseDto
 {
     public Guid Id { get; set; }
-    [Required]
-    public string Name { get; set; }
-    [Required]
-    public List<int> Permissions { get; set; }
+    [Required] public string Name { get; set; }
+    [Required] public List<int> Permissions { get; set; }
 }
 
 public static class PermissionGroupDtoExtension
@@ -29,12 +27,12 @@ public static class PermissionGroupDtoExtension
     public static PermissionGroupDto ToDto(this PermissionGroup entity)
     {
         return new PermissionGroupDto
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Permissions = entity.Permissions.CommaSeparateStringToList(),
-                Created = entity.Created,
-                Updated = entity.Updated
-            };
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Permissions = entity.Permissions.CommaSeparateStringToList(),
+            Created = entity.Created,
+            Updated = entity.Updated
+        };
     }
 }

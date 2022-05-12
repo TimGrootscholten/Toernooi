@@ -12,9 +12,9 @@ public static class Extensions
         {
             response.StatusCode = (int) httpStatusCode;
             return Task.CompletedTask;
-        });    
+        });
     }
-    
+
     public static string ToCommaSeparateString(this List<int> list)
     {
         return list.Count > 0 ? string.Join(",", list.ConvertAll(x => x.ToString())) : string.Empty;
@@ -24,7 +24,7 @@ public static class Extensions
     {
         return !string.IsNullOrEmpty(str) ? str.Split(",").Select(int.Parse).ToList() : new List<int>();
     }
-    
+
     public static string GetDescription(this Enum value)
     {
         var type = value.GetType();
@@ -35,9 +35,10 @@ public static class Extensions
             var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
             if (attrs.Length > 0)
             {
-                return ((DescriptionAttribute)attrs[0]).Description;
+                return ((DescriptionAttribute) attrs[0]).Description;
             }
         }
+
         return value.ToString();
     }
 }

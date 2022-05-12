@@ -7,95 +7,94 @@ using Migrations;
 using Services;
 using Tournaments.Helpers;
 
-namespace Tournaments
+namespace Tournaments;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; set; }
+    public IConfiguration Configuration { get; set; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddCors(options => options.AddDefaultPolicy(
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000");
-                    builder.AllowAnyHeader();
-                }));
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = "tournaments.nl",
-                        ValidAudience = "tournaments.nl",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tournaments@3102")),
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
-
-            services.AddSwaggerGen(s =>
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddCors(options => options.AddDefaultPolicy(
+            builder =>
             {
-                var securityScheme = new OpenApiSecurityScheme
+                builder.WithOrigins("http://localhost:3000");
+                builder.AllowAnyHeader();
+            }));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    Name = "JWT Authentication",
-                    Description = "Enter JWT Bearer token **_only_**",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer", // must be lower case
-                    BearerFormat = "JWT",
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "tournaments.nl",
+                    ValidAudience = "tournaments.nl",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tournaments@3102")),
+                    ClockSkew = TimeSpan.Zero
                 };
-                s.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {securityScheme, new string[] { }}
-                });
-                s.SwaggerDoc("v1", new OpenApiInfo {Title = "Tournament", Version = "v1"});
-                s.CustomOperationIds(e => e.ActionDescriptor.RouteValues["action"]);
-                s.DocumentFilter<SwaggerFilters>();
             });
 
-            services.AddDbContext<TournamentDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("TournamentDb")));
-            services.DependencyInjection(Configuration);
-            
-            services.AddControllers();
-            services.AddHttpContextAccessor();
-
-            var databaseService = services.BuildServiceProvider().GetService<IDatabaseService>();
-            databaseService?.CheckDatabaseConnection();
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        services.AddSwaggerGen(s =>
         {
-            if (env.IsDevelopment())
+            var securityScheme = new OpenApiSecurityScheme
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tournament v1"));
-            }
+                Name = "JWT Authentication",
+                Description = "Enter JWT Bearer token **_only_**",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer", // must be lower case
+                BearerFormat = "JWT",
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+            s.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+            s.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {securityScheme, new string[] { }}
+            });
+            s.SwaggerDoc("v1", new OpenApiInfo {Title = "Tournament", Version = "v1"});
+            s.CustomOperationIds(e => e.ActionDescriptor.RouteValues["action"]);
+            s.DocumentFilter<SwaggerFilters>();
+        });
 
-            app.UseHttpsRedirection();
+        services.AddDbContext<TournamentDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("TournamentDb")));
+        services.DependencyInjection(Configuration);
 
-            app.UseCors();
-            app.UseRouting();
-            app.UseAuthorization();
-            app.UseAuthentication();
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+        services.AddControllers();
+        services.AddHttpContextAccessor();
+
+        var databaseService = services.BuildServiceProvider().GetService<IDatabaseService>();
+        databaseService?.CheckDatabaseConnection();
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tournament v1"));
         }
+
+        app.UseHttpsRedirection();
+
+        app.UseCors();
+        app.UseRouting();
+        app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }

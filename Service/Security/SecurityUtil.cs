@@ -8,6 +8,7 @@ public static class SecurityUtil
     {
         return claimsPrincipal.FindAll("username").Any();
     }
+
     public static bool IsInScope(ClaimsPrincipal claimsPrincipal, int[] scope)
     {
         return claimsPrincipal.FindAll("scopes").Any(claim => scope.Any(x => x.ToString() == claim.Value));

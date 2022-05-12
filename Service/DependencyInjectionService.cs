@@ -4,28 +4,27 @@ using Migrations;
 using Repositories;
 using Services.User;
 
-namespace Services
+namespace Services;
+
+public static class DependencyInjectionService
 {
-    public static class DependencyInjectionService
+    public static void DependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void DependencyInjection(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddSingleton(configuration);
-            
-            services.AddSingleton<IApiExceptionService, ApiExceptionService>();
-            services.AddTransient<IDatabaseService, DatabaseService>();
+        services.AddSingleton(configuration);
 
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IUserRepository, UserRepository>();
+        services.AddSingleton<IApiExceptionService, ApiExceptionService>();
+        services.AddTransient<IDatabaseService, DatabaseService>();
 
-            services.AddTransient<IPermissionGroupService, PermissionGroupService>();
-            services.AddTransient<IPermissionGroupRepository, PermissionGroupRepository>();
+        services.AddTransient<IUserService, UserService>();
+        services.AddTransient<IUserRepository, UserRepository>();
 
-            services.AddTransient<ITeamService, TeamService>();
-            services.AddTransient<ITeamRepository, TeamRepository>();
+        services.AddTransient<IPermissionGroupService, PermissionGroupService>();
+        services.AddTransient<IPermissionGroupRepository, PermissionGroupRepository>();
 
-            services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<ITokenRepository, TokenRepository>();
-        }
+        services.AddTransient<ITeamService, TeamService>();
+        services.AddTransient<ITeamRepository, TeamRepository>();
+
+        services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<ITokenRepository, TokenRepository>();
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace Models
+﻿namespace Models;
+
+public class Team : BaseEntity
 {
-    public class Team : BaseEntity
-    {
-        public virtual string Name { get; set; }
-    }
+    public virtual string Name { get; set; }
 }

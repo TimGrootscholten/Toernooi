@@ -2,61 +2,60 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
 
-namespace Repositories
+namespace Repositories;
+
+public class UserRepository : IUserRepository
 {
-    public class UserRepository : IUserRepository
+    private readonly TournamentDbContext _dbContext;
+
+    public UserRepository(TournamentDbContext dbContext)
     {
-        private readonly TournamentDbContext _dbContext;
-
-        public UserRepository(TournamentDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        public async Task<User> GetUserById(Guid id)
-        {
-            return await _dbContext.Users.AsQueryable()
-                .Where(x => x.Id == id)
-                .Include("PermissionGroups")
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<User> GetUserByUsername(string username)
-        {
-            return await _dbContext.Users.AsQueryable()
-                .Where(x => x.Username == username)
-                .Include("PermissionGroups")
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<User> CreateUser(User user)
-        {
-            await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-            return user;
-        }
-        
-        public async Task<User> UpdateUser(User user)
-        {
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
-            return user;
-        }
-
-        public async Task<bool> IsUsernameUnique(string username)
-        {
-            return await _dbContext.Users.AsQueryable()
-                .Where(x => x.Username == username)
-                .AnyAsync();
-        }
+        _dbContext = dbContext;
     }
 
-    public interface IUserRepository
+    public async Task<User> GetUserById(Guid id)
     {
-        Task<User> GetUserById(Guid id);
-        Task<User> GetUserByUsername(string username);
-        Task<User> CreateUser(User user);
-        Task<User> UpdateUser(User user);
-        Task<bool> IsUsernameUnique(string username);
+        return await _dbContext.Users.AsQueryable()
+            .Where(x => x.Id == id)
+            .Include("PermissionGroups")
+            .FirstOrDefaultAsync();
     }
+
+    public async Task<User> GetUserByUsername(string username)
+    {
+        return await _dbContext.Users.AsQueryable()
+            .Where(x => x.Username == username)
+            .Include("PermissionGroups")
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<User> CreateUser(User user)
+    {
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<User> UpdateUser(User user)
+    {
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<bool> IsUsernameUnique(string username)
+    {
+        return await _dbContext.Users.AsQueryable()
+            .Where(x => x.Username == username)
+            .AnyAsync();
+    }
+}
+
+public interface IUserRepository
+{
+    Task<User> GetUserById(Guid id);
+    Task<User> GetUserByUsername(string username);
+    Task<User> CreateUser(User user);
+    Task<User> UpdateUser(User user);
+    Task<bool> IsUsernameUnique(string username);
 }
