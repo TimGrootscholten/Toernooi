@@ -49,6 +49,16 @@ namespace Migrations.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PermissionGroups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9cc607c1-7b93-4245-98f5-0d788cf94895"),
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Everyone",
+                            Permissions = "",
+                            Updated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Models.Team", b =>

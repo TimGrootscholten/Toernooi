@@ -15,13 +15,17 @@ namespace Repositories
 
         public async Task<User> GetUserById(Guid id)
         {
-            return await _dbContext.Users.FindAsync(id);
+            return await _dbContext.Users.AsQueryable()
+                .Where(x => x.Id == id)
+                .Include("PermissionGroups")
+                .FirstOrDefaultAsync();
         }
 
         public async Task<User> GetUserByUsername(string username)
         {
             return await _dbContext.Users.AsQueryable()
                 .Where(x => x.Username == username)
+                .Include("PermissionGroups")
                 .FirstOrDefaultAsync();
         }
 

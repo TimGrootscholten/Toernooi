@@ -41,11 +41,13 @@ namespace Services.User
             var isUsernameUnique = await _userRepository.IsUsernameUnique(orgUser.Username);
             if (isUsernameUnique) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Username is not unique");
             orgUser.Password = BCrypt.Net.BCrypt.HashPassword(orgUser.Password);
+            var everyonePermissionGroup = await _permissionGroupRepository.GetPermissionGroupById(Guid.Parse("9cc607c1-7b93-4245-98f5-0d788cf94895"));
+            orgUser.PermissionGroups = new List<PermissionGroup> {everyonePermissionGroup};
             var newUser = await _userRepository.CreateUser(orgUser);
             _logger.Log(LogLevel.Information, $"Created user with id {newUser.Id}");
             return newUser.Adapt<UserDto>();
         }
-        
+
         public async Task<UserEditDto> UpdateUser(UserEditDto user)
         {
             var orgUser = user.Adapt<Models.User>();
@@ -67,7 +69,7 @@ namespace Services.User
 
         public async Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequest)
         {
-            var user = await GetUserByUsername(authenticateRequest.Username);
+            var user = await _userRepository.GetUserByUsername(authenticateRequest.Username);
             var validUser = CheckCredentials(user, authenticateRequest.Password);
             if (!validUser) throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, Enums.MessageText.Unautorized.GetDescription());
             List<Claim> claims = new List<Claim>
@@ -75,14 +77,16 @@ namespace Services.User
                 new("username", user.Username),
                 new("firstName", user.FirstName),
             };
-            var roles = new List<int> {1, 2, 3, 4, 5, 6, 7, 8};
-            claims.AddRange(roles.Select(x => new Claim("scopes", x.ToString())));
+            var permissions = user.PermissionGroups != null
+                ? await _permissionGroupRepository.GetPermissionsByPermissionGroupByIds(user.PermissionGroups.Select(x => x.Id).ToList())
+                : new List<int>();
+            claims.AddRange(permissions.Select(x => new Claim("scopes", x.ToString())));
 
             var accessToken = _tokenService.GenerateAccessToken(claims);
             var refreshToken = Guid.NewGuid();
 
             await _tokenService.SaveRefreshToken(authenticateRequest.ClientId, refreshToken, authenticateRequest.Username);
-            
+
             return new AuthResponse {AccesToken = accessToken, RefreshToken = refreshToken};
         }
 
