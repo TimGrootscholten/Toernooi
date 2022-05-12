@@ -1,36 +1,42 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Models;
 
 namespace Services
 {
     public class ApiExceptionService : IApiExceptionService
     {
         private readonly ILogger _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApiExceptionService(ILogger<ApiExceptionService> logger)
+        public ApiExceptionService(ILogger<ApiExceptionService> logger, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public Exception Create(HttpStatusCode code, string message)
+        public ArgumentException Create(HttpStatusCode code, string message)
         {
-            var exception = new Exception($"{(int)code} {code} {message}");
+            var exception = new ArgumentException($"{(int)code} {code} {message}");
             _logger.LogError(exception, message);
+            _httpContextAccessor.HttpContext.Response.SetHttpStatusCode(code);
             return exception;
         }
 
-        public Exception Create(Exception exception, HttpStatusCode code, string message)
+        public ArgumentException Create(Exception exception, HttpStatusCode code, string message)
         {
             var newMessage = $"{(int)code} {code} {message}";
             _logger.LogError(exception, newMessage);
-            return new Exception( newMessage, exception);
+            _httpContextAccessor.HttpContext.Response.SetHttpStatusCode(code);
+            return new ArgumentException( newMessage, exception);
         }
     }
 
     public interface IApiExceptionService
     {
-        Exception Create(HttpStatusCode code, string message);
-        Exception Create(Exception exception, HttpStatusCode code, string message);
+        ArgumentException Create(HttpStatusCode code, string message);
+        ArgumentException Create(Exception exception, HttpStatusCode code, string message);
 
     }
 }

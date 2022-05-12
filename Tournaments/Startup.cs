@@ -74,6 +74,7 @@ namespace Tournaments
             services.DependencyInjection(Configuration);
             
             services.AddControllers();
+            services.AddHttpContextAccessor();
 
             var databaseService = services.BuildServiceProvider().GetService<IDatabaseService>();
             databaseService?.CheckDatabaseConnection();
