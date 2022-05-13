@@ -1,4 +1,5 @@
-﻿using Dtos;
+﻿using System.ComponentModel.DataAnnotations;
+using Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Services.Security;
 using Services.User;
@@ -18,7 +19,7 @@ public class UserV1Controller : BaseV1Controller
 
     [HttpGet("{id:guid}")]
     [Scope]
-    public async Task<UserInfoDto> GetUserById(Guid id)
+    public async Task<UserInfoDto> GetUserById([Required] Guid id)
     {
         return await _userService.GetUserById(id);
     }
@@ -40,7 +41,7 @@ public class UserV1Controller : BaseV1Controller
 
     [HttpPut("add-permission-groups")]
     [Scope]
-    public async Task<IActionResult> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds)
+    public async Task<IActionResult> AddPermissionGroups([Required] Guid userId, [Required] List<Guid> permissionGroupIds)
     {
         await _userService.AddPermissionGroups(userId, permissionGroupIds);
         return Ok();
@@ -51,7 +52,7 @@ public class UserV1Controller : BaseV1Controller
     {
         return await _userService.Authenticate(authenticateRequest);
     }
-    
+
     [HttpPost("authenticate-with-refresh-token")]
     public async Task<AuthResponse> Authenticate(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken)
     {
@@ -59,13 +60,13 @@ public class UserV1Controller : BaseV1Controller
     }
 
     [HttpDelete("client-grant")]
-    public async Task<bool> DeleteClientGrant(Guid clientId)
+    public async Task<bool> DeleteClientGrant([Required] Guid clientId)
     {
         return await _userService.DeleteClientGrant(clientId);
     }
 
     [HttpPost("is-unique-username")]
-    public async Task<bool> IsUniqueUsername(string username)
+    public async Task<bool> IsUniqueUsername([Required] string username)
     {
         return await _userService.IsUniqueUsername(username);
     }
