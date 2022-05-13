@@ -40,10 +40,9 @@ public class UserV1Controller : BaseV1Controller
 
     [HttpPut("add-permission-groups")]
     [Scope]
-    public async Task<IActionResult> AddPermissionGroups([Required] Guid userId, [Required] List<Guid> permissionGroupIds)
+    public async Task<bool> AddPermissionGroups([Required] Guid userId, [Required] List<Guid> permissionGroupIds)
     {
-        await _userService.AddPermissionGroups(userId, permissionGroupIds);
-        return Ok();
+        return await _userService.AddPermissionGroups(userId, permissionGroupIds);
     }
 
     [HttpPost("token")]
@@ -53,7 +52,7 @@ public class UserV1Controller : BaseV1Controller
     }
 
     [HttpPost("authenticate-with-refresh-token")]
-    public async Task<AuthResponse> Authenticate(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken)
+    public async Task<AuthResponse> AuthenticateWithRefreshToken(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken)
     {
         return await _userService.AuthenticateWithRefreshToken(authenticateWithRefreshToken);
     }
