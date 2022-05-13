@@ -2,6 +2,8 @@
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using Dtos;
+using Mapster;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
 
@@ -39,10 +41,25 @@ public class TokenService : ITokenService
         if (!saveRefreshToken) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to authenticate");
         return saveRefreshToken;
     }
+
+    public async Task<TokenDto> CheckRefreshToken(Guid clientId, Guid oldRefreshToken)
+    {
+        var token = await _tokenRepository.CheckRefreshToken(clientId, oldRefreshToken);
+        return token != null ? token.Adapt<TokenDto>() : throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to authenticate");
+    }
+
+    public async Task<bool> DeleteClientGrant(Guid clientId)
+    {
+        var clientGrant = await _tokenRepository.DeleteClientGrand(clientId);
+        if (!clientGrant) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to delete the client grant");
+        return clientGrant;
+    }
 }
 
 public interface ITokenService
 {
     string GenerateAccessToken(IEnumerable<Claim> claims);
     Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null);
+    Task<TokenDto> CheckRefreshToken(Guid clientId, Guid oldRefreshToken);
+    Task<bool> DeleteClientGrant(Guid clientId);
 }

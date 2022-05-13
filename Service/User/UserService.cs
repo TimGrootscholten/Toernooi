@@ -75,14 +75,11 @@ public class UserService : IUserService
         List<Claim> claims = new List<Claim>
         {
             new("username", user.Username),
-            new("firstName", user.FirstName),
+            new("name", user.FirstName + user.LastName),
         };
-        var permissions = user.PermissionGroups != null
-            ? await _permissionGroupRepository.GetPermissionsByPermissionGroupByIds(user.PermissionGroups.Select(x => x.Id).ToList())
-            : new List<int>();
-        claims.AddRange(permissions.Select(x => new Claim("scopes", x.ToString())));
+        var newClaims = await AddPermissionsToClaims(user, claims);
 
-        var accessToken = _tokenService.GenerateAccessToken(claims);
+        var accessToken = _tokenService.GenerateAccessToken(newClaims);
         var refreshToken = Guid.NewGuid();
 
         await _tokenService.SaveRefreshToken(authenticateRequest.ClientId, refreshToken, authenticateRequest.Username);
@@ -90,19 +87,47 @@ public class UserService : IUserService
         return new AuthResponse {AccesToken = accessToken, RefreshToken = refreshToken};
     }
 
+    public async Task<AuthResponse> AuthenticateWithRefreshToken(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken)
+    {
+        var refreshToken = await _tokenService.CheckRefreshToken(authenticateWithRefreshToken.ClientId, authenticateWithRefreshToken.RefreshToken);
+        var user = await _userRepository.GetUserByUsername(refreshToken.Username);
+
+        var claims = new List<Claim>
+        {
+            new("username", user.Username),
+            new("name", user.FirstName + user.LastName)
+        };
+        var newClaims = await AddPermissionsToClaims(user, claims);
+
+        var accessToken = _tokenService.GenerateAccessToken(newClaims);
+        var newRefreshToken = Guid.NewGuid();
+
+        await _tokenService.SaveRefreshToken(authenticateWithRefreshToken.ClientId, newRefreshToken, user.Username);
+        return new AuthResponse {AccesToken = accessToken, RefreshToken = newRefreshToken};
+    }
+
+    public async Task<bool> DeleteClientGrant(Guid clientId)
+    {
+        return await _tokenService.DeleteClientGrant(clientId);
+    }
+
     public async Task<bool> IsUniqueUsername(string username)
     {
         return !await _userRepository.IsUsernameUnique(username);
     }
 
-    private async Task<Models.User> GetUserByUsername(string username)
-    {
-        return await _userRepository.GetUserByUsername(username);
-    }
-
     private static bool CheckCredentials(Models.User user, string password)
     {
         return BCrypt.Net.BCrypt.Verify(password, user.Password);
+    }
+
+    private async Task<List<Claim>> AddPermissionsToClaims(Models.User user, List<Claim> claims)
+    {
+        var permissions = user.PermissionGroups != null
+            ? await _permissionGroupRepository.GetPermissionsByPermissionGroupByIds(user.PermissionGroups.Select(x => x.Id).ToList())
+            : new List<int>();
+        claims.AddRange(permissions.Select(x => new Claim("scopes", x.ToString())));
+        return claims;
     }
 }
 
@@ -113,5 +138,7 @@ public interface IUserService
     Task<UserEditDto> UpdateUser(UserEditDto user);
     Task<bool> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds);
     Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequest);
+    Task<AuthResponse> AuthenticateWithRefreshToken(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken);
+    Task<bool> DeleteClientGrant(Guid clientId);
     Task<bool> IsUniqueUsername(string username);
 }

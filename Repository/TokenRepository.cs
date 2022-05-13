@@ -62,7 +62,7 @@ public class TokenRepository : ITokenRepository
         return null;
     }
 
-    public async Task<Token> DeleteClientGrand(Guid clientId)
+    public async Task<bool> DeleteClientGrant(Guid clientId)
     {
         var token = await _dbContext.Tokens.AsQueryable()
             .Where(x => x.ClientId == clientId)
@@ -72,9 +72,9 @@ public class TokenRepository : ITokenRepository
         {
             _dbContext.Tokens.Remove(token);
             await _dbContext.SaveChangesAsync();
+            return true;
         }
-
-        return token;
+        return false;
     }
 }
 
@@ -82,5 +82,5 @@ public interface ITokenRepository
 {
     Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null);
     Task<Token> CheckRefreshToken(Guid clientId, Guid oldRefreshToken);
-    Task<Token> DeleteClientGrand(Guid clientId);
+    Task<bool> DeleteClientGrant(Guid clientId);
 }

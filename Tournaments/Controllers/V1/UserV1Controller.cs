@@ -47,9 +47,21 @@ public class UserV1Controller : BaseV1Controller
     }
 
     [HttpPost("token")]
-    public async Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequestDto)
+    public async Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequest)
     {
-        return await _userService.Authenticate(authenticateRequestDto);
+        return await _userService.Authenticate(authenticateRequest);
+    }
+    
+    [HttpPost("authenticate-with-refresh-token")]
+    public async Task<AuthResponse> Authenticate(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken)
+    {
+        return await _userService.AuthenticateWithRefreshToken(authenticateWithRefreshToken);
+    }
+
+    [HttpDelete("client-grant")]
+    public async Task<bool> DeleteClientGrant(Guid clientId)
+    {
+        return await _userService.DeleteClientGrant(clientId);
     }
 
     [HttpPost("is-unique-username")]
