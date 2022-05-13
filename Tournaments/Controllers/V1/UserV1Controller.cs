@@ -24,6 +24,12 @@ public class UserV1Controller : BaseV1Controller
         return await _userService.GetUserById(id);
     }
 
+    [HttpGet]
+    public async Task<List<UserInfoDto>> GetUsers()
+    {
+        return await _userService.GetUsers();
+    }
+
     [HttpPost]
     public async Task<AuthResponse> CreateUser([FromBody] UserDto user)
     {

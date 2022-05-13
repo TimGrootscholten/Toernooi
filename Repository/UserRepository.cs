@@ -29,6 +29,13 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<List<User>> GetUsers()
+    {
+        return await _dbContext.Users.AsQueryable()
+            .Include("PermissionGroups")
+            .ToListAsync();
+    }
+
     public async Task<User> CreateUser(User user)
     {
         await _dbContext.Users.AddAsync(user);
@@ -56,6 +63,7 @@ public interface IUserRepository
 {
     Task<User> GetUserById(Guid id);
     Task<User> GetUserByUsername(string username);
+    Task<List<User>> GetUsers();
     Task<User> CreateUser(User user);
     Task<User> UpdateUser(User user);
     Task<bool> IsUsernameUnique(string username);

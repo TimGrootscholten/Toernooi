@@ -35,6 +35,12 @@ public class UserService : IUserService
         return user.ToInfoDto();
     }
 
+    public async Task<List<UserInfoDto>> GetUsers()
+    {
+        var users = await _userRepository.GetUsers();
+        return users.Adapt<List<UserInfoDto>>();
+    }
+
     public async Task<AuthResponse> CreateUser(UserDto user)
     {
         var orgUser = user.Adapt<Models.User>();
@@ -134,6 +140,7 @@ public class UserService : IUserService
 public interface IUserService
 {
     Task<UserInfoDto> GetUserById(Guid id);
+    Task<List<UserInfoDto>> GetUsers();
     Task<AuthResponse> CreateUser(UserDto user);
     Task<UserEditDto> UpdateUser(UserEditDto user);
     Task<bool> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds);
@@ -141,4 +148,5 @@ public interface IUserService
     Task<AuthResponse> AuthenticateWithRefreshToken(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken);
     Task<bool> DeleteClientGrant(Guid clientId);
     Task<bool> IsUniqueUsername(string username);
+    
 }
