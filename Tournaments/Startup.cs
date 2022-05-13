@@ -25,6 +25,7 @@ public class Startup
             {
                 builder.WithOrigins("http://localhost:3000");
                 builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
             }));
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
