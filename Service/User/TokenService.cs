@@ -50,7 +50,7 @@ public class TokenService : ITokenService
 
     public async Task<bool> DeleteClientGrant(Guid clientId)
     {
-        var clientGrant = await _tokenRepository.DeleteClientGrand(clientId);
+        var clientGrant = await _tokenRepository.DeleteClientGrant(clientId);
         if (!clientGrant) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to delete the client grant");
         return clientGrant;
     }
