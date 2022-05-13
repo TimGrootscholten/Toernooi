@@ -60,7 +60,7 @@ public class UserService : IUserService
     public async Task<bool> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds)
     {
         var orgUser = await _userRepository.GetUserById(userId);
-        orgUser.PermissionGroups = await _permissionGroupRepository.GetPermissionGroupByIds(permissionGroupIds);
+        orgUser.PermissionGroups.AddRange(await _permissionGroupRepository.GetPermissionGroupByIds(permissionGroupIds));
         orgUser.SetUpdated();
         var newUser = await _userRepository.UpdateUser(orgUser);
         _logger.Log(LogLevel.Information, $"Added permission group(s) to user with id {newUser.Id}");
