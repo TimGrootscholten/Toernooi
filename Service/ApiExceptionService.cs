@@ -18,7 +18,7 @@ public class ApiExceptionService : IApiExceptionService
 
     public ApiException Create(HttpStatusCode code, string message)
     {
-        var exception = new ApiException($"{(int) code} {code} {message}");
+        var exception = new ApiException(message);
         _logger.LogError(exception, message);
         _httpContextAccessor.HttpContext.Response.SetHttpStatusCode(code);
         return exception;

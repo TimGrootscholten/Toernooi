@@ -38,20 +38,20 @@ public class TokenService : ITokenService
     public async Task<bool> SaveRefreshToken(Guid clientId, Guid refreshToken, string username, Guid? oldRefreshToken = null)
     {
         var saveRefreshToken = await _tokenRepository.SaveRefreshToken(clientId, refreshToken, username, oldRefreshToken);
-        if (!saveRefreshToken) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to authenticate");
+        if (!saveRefreshToken) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Fout bij het inloggen");
         return saveRefreshToken;
     }
 
     public async Task<TokenDto> CheckRefreshToken(Guid clientId, Guid oldRefreshToken)
     {
         var token = await _tokenRepository.CheckRefreshToken(clientId, oldRefreshToken);
-        return token != null ? token.Adapt<TokenDto>() : throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to authenticate");
+        return token != null ? token.Adapt<TokenDto>() : throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Fout bij het inloggen");
     }
 
     public async Task<bool> DeleteClientGrant(Guid clientId)
     {
         var clientGrant = await _tokenRepository.DeleteClientGrant(clientId);
-        if (!clientGrant) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Failed to delete the client grant");
+        if (!clientGrant) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Fout bij het verwijderen van de inloggevens");
         return clientGrant;
     }
 }

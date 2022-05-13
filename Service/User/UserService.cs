@@ -39,7 +39,7 @@ public class UserService : IUserService
     {
         var orgUser = user.Adapt<Models.User>();
         var isUsernameUnique = await _userRepository.IsUsernameUnique(orgUser.Username);
-        if (isUsernameUnique) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Username is not unique");
+        if (isUsernameUnique) throw _apiExceptionService.Create(HttpStatusCode.BadRequest, "Gebruikersnaam bestaat al");
         orgUser.Password = BCrypt.Net.BCrypt.HashPassword(orgUser.Password);
         var everyonePermissionGroup = await _permissionGroupRepository.GetPermissionGroupById(Guid.Parse("9cc607c1-7b93-4245-98f5-0d788cf94895"));
         orgUser.PermissionGroups = new List<PermissionGroup> {everyonePermissionGroup};
@@ -71,7 +71,7 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetUserByUsername(authenticateRequest.Username);
         var validUser = CheckCredentials(user, authenticateRequest.Password);
-        if (!validUser) throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, "Wrong user credentials");
+        if (!validUser) throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, "Gebruikersnaam of wachtwoord is niet juist");
         List<Claim> claims = new List<Claim>
         {
             new("username", user.Username),
