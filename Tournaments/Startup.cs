@@ -77,6 +77,8 @@ public class Startup
         services.AddControllers();
         services.AddHttpContextAccessor();
 
+        // Disable BuildServiceProvider warning, no other options to resolve
+        #pragma warning disable ASP0000
         var databaseService = services.BuildServiceProvider().GetService<IDatabaseService>();
         databaseService?.CheckDatabaseConnection();
     }
