@@ -35,7 +35,7 @@ public class UserService : IUserService
         return user.ToInfoDto();
     }
 
-    public async Task<UserDto> CreateUser(UserDto user)
+    public async Task<AuthResponse> CreateUser(UserDto user)
     {
         var orgUser = user.Adapt<Models.User>();
         var isUsernameUnique = await _userRepository.IsUsernameUnique(orgUser.Username);
@@ -45,7 +45,7 @@ public class UserService : IUserService
         orgUser.PermissionGroups = new List<PermissionGroup> {everyonePermissionGroup};
         var newUser = await _userRepository.CreateUser(orgUser);
         _logger.Log(LogLevel.Information, $"Created user with id {newUser.Id}");
-        return newUser.Adapt<UserDto>();
+        return await Authenticate(new AuthenticateRequestDto {ClientId = user.ClientId, Username = user.Username, Password = user.Password});
     }
 
     public async Task<UserEditDto> UpdateUser(UserEditDto user)
@@ -134,7 +134,7 @@ public class UserService : IUserService
 public interface IUserService
 {
     Task<UserInfoDto> GetUserById(Guid id);
-    Task<UserDto> CreateUser(UserDto user);
+    Task<AuthResponse> CreateUser(UserDto user);
     Task<UserEditDto> UpdateUser(UserEditDto user);
     Task<bool> AddPermissionGroups(Guid userId, List<Guid> permissionGroupIds);
     Task<AuthResponse> Authenticate(AuthenticateRequestDto authenticateRequest);

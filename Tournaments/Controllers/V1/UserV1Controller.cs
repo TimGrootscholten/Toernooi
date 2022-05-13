@@ -25,10 +25,9 @@ public class UserV1Controller : BaseV1Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] UserDto user)
+    public async Task<AuthResponse> CreateUser([FromBody] UserDto user)
     {
-        await _userService.CreateUser(user);
-        return Ok();
+        return await _userService.CreateUser(user);
     }
 
     [HttpPut]
