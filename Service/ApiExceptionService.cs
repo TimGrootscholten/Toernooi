@@ -16,25 +16,16 @@ public class ApiExceptionService : IApiExceptionService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public ArgumentException Create(HttpStatusCode code, string message)
+    public ApiException Create(HttpStatusCode code, string message)
     {
-        var exception = new ArgumentException($"{(int) code} {code} {message}");
+        var exception = new ApiException($"{(int) code} {code} {message}");
         _logger.LogError(exception, message);
         _httpContextAccessor.HttpContext.Response.SetHttpStatusCode(code);
         return exception;
-    }
-
-    public ArgumentException Create(Exception exception, HttpStatusCode code, string message)
-    {
-        var newMessage = $"{(int) code} {code} {message}";
-        _logger.LogError(exception, newMessage);
-        _httpContextAccessor.HttpContext.Response.SetHttpStatusCode(code);
-        return new ArgumentException(newMessage, exception);
     }
 }
 
 public interface IApiExceptionService
 {
-    ArgumentException Create(HttpStatusCode code, string message);
-    ArgumentException Create(Exception exception, HttpStatusCode code, string message);
+    ApiException Create(HttpStatusCode code, string message);
 }
