@@ -46,6 +46,7 @@ public class UserRepository : IUserRepository
     public async Task<User> UpdateUser(User user)
     {
         _dbContext.Users.Update(user);
+        _dbContext.Entry(user).Property(x => x.Username).IsModified = false;
         _dbContext.Entry(user).Property(x => x.Password).IsModified = false;
         await _dbContext.SaveChangesAsync();
         return user;
