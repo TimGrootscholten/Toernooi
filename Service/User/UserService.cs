@@ -78,10 +78,10 @@ public class UserService : IUserService
         var user = await _userRepository.GetUserByUsername(authenticateRequest.Username);
         var validUser = CheckCredentials(user, authenticateRequest.Password);
         if (!validUser) throw _apiExceptionService.Create(HttpStatusCode.Unauthorized, "Gebruikersnaam of wachtwoord is niet juist");
-        List<Claim> claims = new List<Claim>
+        var claims = new List<Claim>
         {
             new("username", user.Username),
-            new("name", user.FirstName + user.LastName),
+            new("name", user.FirstName + user.LastName)
         };
         var newClaims = await AddPermissionsToClaims(user, claims);
 
@@ -90,7 +90,7 @@ public class UserService : IUserService
 
         await _tokenService.SaveRefreshToken(authenticateRequest.ClientId, refreshToken, authenticateRequest.Username);
 
-        return new AuthResponse {AccesToken = accessToken, RefreshToken = refreshToken};
+        return new AuthResponse {AccessToken = accessToken, RefreshToken = refreshToken};
     }
 
     public async Task<AuthResponse> AuthenticateWithRefreshToken(AuthenticateWithRefreshTokenDto authenticateWithRefreshToken)
@@ -109,7 +109,7 @@ public class UserService : IUserService
         var newRefreshToken = Guid.NewGuid();
 
         await _tokenService.SaveRefreshToken(authenticateWithRefreshToken.ClientId, newRefreshToken, user.Username);
-        return new AuthResponse {AccesToken = accessToken, RefreshToken = newRefreshToken};
+        return new AuthResponse {AccessToken = accessToken, RefreshToken = newRefreshToken};
     }
 
     public async Task<bool> DeleteClientGrant(Guid clientId)

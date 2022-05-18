@@ -26,9 +26,9 @@ public class TokenService : ITokenService
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tournaments@3102"));
         var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
         var tokenOptions = new JwtSecurityToken(
-            issuer: "tournaments.nl",
-            audience: "tournaments.nl",
-            claims: claims,
+            "tournaments.nl",
+            "tournaments.nl",
+            claims,
             expires: DateTime.UtcNow.AddMinutes(20),
             signingCredentials: signingCredentials
         );

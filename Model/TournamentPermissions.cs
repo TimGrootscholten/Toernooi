@@ -9,5 +9,5 @@ public enum TournamentPermissions
     PermissionGroupCreate = 5,
     PermissionGroupRead = 6,
     PermissionGroupUpdate = 7,
-    PermissionGroupDelete = 8,
+    PermissionGroupDelete = 8
 }

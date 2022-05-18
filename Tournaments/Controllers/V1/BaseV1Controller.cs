@@ -6,8 +6,4 @@ namespace Tournaments.Controllers.V1;
 [ApiController]
 public class BaseV1Controller : ControllerBase
 {
-    internal bool HasError(string fieldname)
-    {
-        return ModelState.Keys.Where(k => k == fieldname).Select(k => ModelState[k]!.Errors[0].ErrorMessage).Any();
-    }
 }

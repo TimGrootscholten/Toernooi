@@ -21,7 +21,7 @@ public class DatabaseService : IDatabaseService
         _logger.Log(LogLevel.Information, "Connecting database...");
         if (await _dbContext.Database.CanConnectAsync())
         {
-            _logger.Log(LogLevel.Information, "Succesfully connected to database");
+            _logger.Log(LogLevel.Information, "Successfully connected to database");
             IsDatabaseSchemaValid();
         }
         else
@@ -33,12 +33,10 @@ public class DatabaseService : IDatabaseService
     private async void IsDatabaseSchemaValid()
     {
         var pendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync();
-        if (pendingMigrations.Any())
-        {
-            _logger.Log(LogLevel.Information, "Database schema updating...");
-            await _dbContext.Database.MigrateAsync();
-            _logger.Log(LogLevel.Information, "Database schema updated");
-        }
+        if (!pendingMigrations.Any()) return;
+        _logger.Log(LogLevel.Information, "Database schema updating...");
+        await _dbContext.Database.MigrateAsync();
+        _logger.Log(LogLevel.Information, "Database schema updated");
     }
 }
 

@@ -16,7 +16,7 @@ public class Startup
         Configuration = configuration;
     }
 
-    public IConfiguration Configuration { get; set; }
+    private IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -63,7 +63,7 @@ public class Startup
             s.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
             s.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
-                {securityScheme, new string[] { }}
+                {securityScheme, Array.Empty<string>()}
             });
             s.SwaggerDoc("v1", new OpenApiInfo {Title = "Tournament", Version = "v1"});
             s.CustomOperationIds(e => e.ActionDescriptor.RouteValues["action"]);
@@ -78,7 +78,7 @@ public class Startup
         services.AddHttpContextAccessor();
 
         // Disable BuildServiceProvider warning, no other options to resolve
-        #pragma warning disable ASP0000
+#pragma warning disable ASP0000
         var databaseService = services.BuildServiceProvider().GetService<IDatabaseService>();
         databaseService?.CheckDatabaseConnection();
     }
@@ -89,7 +89,7 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tournament v1"));
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tournament v1"); });
         }
 
         app.UseHttpsRedirection();

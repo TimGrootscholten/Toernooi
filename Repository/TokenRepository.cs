@@ -21,7 +21,7 @@ public class TokenRepository : ITokenRepository
 
         if (token == null)
         {
-            Token saveToken = new Token
+            var saveToken = new Token
             {
                 ClientId = clientId,
                 RefreshToken = refreshToken,
@@ -42,12 +42,9 @@ public class TokenRepository : ITokenRepository
             return true;
         }
 
-        if (token.ClientId == clientId)
-        {
-            _dbContext.Tokens.Remove(new Token {Id = token.Id});
-            await _dbContext.SaveChangesAsync();
-        }
-
+        if (token.ClientId != clientId) return false;
+        _dbContext.Tokens.Remove(new Token {Id = token.Id});
+        await _dbContext.SaveChangesAsync();
         return false;
     }
 
@@ -68,13 +65,10 @@ public class TokenRepository : ITokenRepository
             .Where(x => x.ClientId == clientId)
             .FirstOrDefaultAsync();
 
-        if (token != null)
-        {
-            _dbContext.Tokens.Remove(token);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-        return false;
+        if (token == null) return false;
+        _dbContext.Tokens.Remove(token);
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 }
 

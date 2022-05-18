@@ -4,6 +4,6 @@ namespace Dtos;
 
 public class TeamDto : BaseDto
 {
-    public virtual Guid Id { get; set; }
-    [Required] public virtual string Name { get; set; }
+    public Guid Id { get; set; }
+    [Required] public string Name { get; set; }
 }

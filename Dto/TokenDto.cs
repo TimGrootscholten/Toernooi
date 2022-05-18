@@ -4,9 +4,9 @@ namespace Dtos;
 
 public class TokenDto : BaseDto
 {
-    public virtual Guid Id { get; set; }
-    [Required] public virtual Guid ClientId { get; set; }
-    [Required] public virtual Guid RefreshToken { get; set; }
-    [Required] public virtual DateTime RefreshTokenExpires { get; set; }
-    [Required] public virtual string Username { get; set; }
+    public Guid Id { get; set; }
+    [Required] public Guid ClientId { get; set; }
+    [Required] public Guid RefreshToken { get; set; }
+    [Required] public DateTime RefreshTokenExpires { get; set; }
+    [Required] public string Username { get; set; }
 }

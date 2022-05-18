@@ -2,5 +2,5 @@
 
 public class Team : BaseEntity
 {
-    public virtual string Name { get; set; }
+    public string Name { get; set; }
 }

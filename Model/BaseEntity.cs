@@ -13,6 +13,6 @@ public class BaseEntity
 
     public virtual void SetUpdated()
     {
-        this.Updated = DateTime.UtcNow;
+        Updated = DateTime.UtcNow;
     }
 }
