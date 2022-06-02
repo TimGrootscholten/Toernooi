@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Tournaments.Helpers;
 
-public abstract class SwaggerFilters : IDocumentFilter
+public class SwaggerFilters : IDocumentFilter
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {

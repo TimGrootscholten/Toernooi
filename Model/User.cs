@@ -1,6 +1,6 @@
 ﻿namespace Models;
 
-public abstract class User : BaseEntity
+public class User : BaseEntity
 {
     public virtual string Username { get; set; }
     public virtual string Password { get; set; }
