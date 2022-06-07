@@ -23,8 +23,9 @@ public class UserV1Controller : BaseV1Controller
     {
         return await _userService.GetUserById(id);
     }
-
+    
     [HttpGet]
+    [Scope]
     public async Task<List<UserInfoDto>> GetUsers()
     {
         return await _userService.GetUsers();

@@ -38,7 +38,7 @@ public class UserService : IUserService
     public async Task<List<UserInfoDto>> GetUsers()
     {
         var users = await _userRepository.GetUsers();
-        return users.Adapt<List<UserInfoDto>>();
+        return users.Select(x => x.ToInfoDto()).ToList();
     }
 
     public async Task<AuthResponse> CreateUser(UserDto user)
